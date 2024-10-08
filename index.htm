@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta and Title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday Kailum</title>
+    
+    <!-- CSS Styles -->
+    <style>
+        /* Import Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Amatic+SC:wght@700&display=swap');
+        
+        /* General Styles */
+        body {
+            font-family: 'Caveat', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background-color: black;
+            color: #181513;
+            font-size: 24px;
+            line-height: 1.4;
+        }
+        .parchment {
+            background-image: url('images/parchment.jpg');
+            background-size: cover;
+            padding: 40px;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 95%;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            margin: 0 auto;
+        }
+        h1, h2, #spellLevel {
+            font-family: 'Amatic SC', cursive;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 72px;
+        }
+        h2 {
+            font-size: 56px;
+        }
+        /* Canvas Styles */
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 33.33%; /* 3:1 aspect ratio */
+        }
+        .canvas-border {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            z-index: 1;
+        }
+
+        #magicalEnergyField, #particleCanvas {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            width: 90%;
+            height: 90%;
+            z-index: 2;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+        #particleCanvas {
+            z-index: 3;
+        }
+        /* Control Buttons */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 0;
+            font-size: 20px;
+            font-family: 'Caveat', cursive;
+            color: #4a2c0f;
+            background-color: transparent;
+            background-image: url('images/button.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+            height: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s ease-in-out;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        /* Voltmeter Styles */
+        .voltmeter-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #magicalResonanceMeter {
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            aspect-ratio: 2 / 1;
+            background-image: url('images/magicalResonanceMeter.png');
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
+            margin: 20px auto;
+            display: none;
+        }
+        #needle {
+            width: 5.5%;
+            height: 65%;
+            background-image: url('images/needle.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            position: absolute;
+            bottom: 0;
+            left: 47%;
+            transform-origin: bottom center;
+            transition: transform 0.5s ease-out;
+        }
+        #submit.active {
+            color: #006400;
+        }
+        #spellLevel {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        /* Slider Styles */
+        .slider-container {
+            width: 100%;
+            max-width: 300px;
+            margin: 10px auto;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 27px;
+            background: url('images/slider-background.png') no-repeat;
+            background-size: 100% 100%;
+            outline: none;
+            padding: 0;
+            margin: 0;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 54px;
+            height: 54px;
+            background: url('images/slider-stone.png') no-repeat;
+            background-size: cover;
+            cursor: pointer;
+            margin-top: -13.5px;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 54px;
+            height: 54px;
+            background: url('images/slider-stone.png') no-repeat;
+            background-size: cover;
+            cursor: pointer;
+            border: none;
+        }
+        input[type="range"]::-moz-range-track {
+            height: 27px;
+            background: url('images/slider-background.png') no-repeat;
+            background-size: 100% 100%;
+        }
+        /* Screen Styles */
+        .screen {
+            display: none;
+            text-align: center;
+        }
+        #gameScreen {
+            display: block;
+        }
+        .verse {
+            white-space: pre-line;
+            font-size: 28px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 48px;
+            }
+            h2 {
+                font-size: 36px;
+            }
+            .parchment {
+                padding: 20px;
+            }
+            #spellLevel {
+                font-size: 36px;
+            }
+            .verse {
+                font-size: 24px;
+            }
+            #magicalResonanceMeter {
+                max-width: 100%;
+                height: auto;
+            }
+            #needle {
+                width: 5.5%;
+                height: 65%;
+            }
+        }
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 36px;
+            }
+            h2 {
+                font-size: 28px;
+            }
+            .parchment {
+                padding: 15px;
+            }
+            #spellLevel {
+                font-size: 28px;
+            }
+            .verse {
+                font-size: 20px;
+            }
+            #magicalResonanceMeter {
+                max-width: 100%;
+                height: auto;
+            }
+            #needle {
+                width: 5.5%;
+                height: 65%;
+            }
+        }
+        /* Loading Screen Styles */
+        #loadingScreen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+            color: white;
+        }
+        #loadingBar {
+            width: 300px;
+            height: 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        #loadingProgress {
+            width: 0%;
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.5s;
+        }
+
+        
+/* Override h2 font within the endingScreen */
+#endingScreen h2 {
+    font-family: 'Caveat', cursive;
+    font-weight: normal; /* Adjust as needed */
+    font-size: 28px; /* Optional: Match verse font size */
+    margin-bottom: 15px; /* Space between title and content */
+}
+
+/* Ensure .ending uses 'Caveat' */
+.ending {
+    font-family: 'Caveat', cursive; /* Explicitly set to 'Caveat' */
+    font-weight: normal;
+    font-size: 24px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    margin-top: 10px;
+}
+
+/* Optional: Dedicated class for ending titles */
+.endingTitle {
+    font-family: 'Caveat', cursive;
+    font-weight: normal; /* Adjust to match verse font weight */
+    font-size: 28px; /* Match the verse font size if desired */
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+/* Responsive Adjustments for Ending Titles and Content */
+@media (max-width: 768px) {
+    #endingScreen h2 {
+        font-size: 24px;
+    }
+    .ending {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    #endingScreen h2 {
+        font-size: 20px;
+    }
+    .ending {
+        font-size: 18px;
+    }
+}
+
+
+
+        /* Fade-in Effect */
+        .fade-in {
+            opacity: 0;
+            transition: opacity 3s ease-in;
+        }
+
+        /* Styles for the options */
+        .option {
+            background-color: #f9f4e6;
+            border: 2px solid #d3c0a6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            text-align: center; /* Center the text */
+            font-size: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .option:hover {
+            background-color: #e8e0cb;
+        }
+
+        .option.selected {
+            background-color: #e0d8c2;
+            border-color: #b39e82;
+        }
+
+        .option input {
+            margin-right: 10px;
+        }
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+
+    <!-- Background Music (Optional) -->
+    <audio id="backgroundMusic" loop>
+        <source src="sounds/happy-bday-Gareth.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="screen">
+        <h2>Loading...</h2>
+        <div id="loadingBar">
+            <div id="loadingProgress"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="parchment">
+        <!-- Start Screen -->
+        <div id="startScreen" class="screen">
+            <h1>Happy Birthday Kailum!</h1>
+            <p>I love our conversations and philosophical musings.<br>So, until our next catch up, enjoy this game that's made for you.</p>
+            <button onclick="showVerse()">Begin</button>
+        </div>
+        
+        <!-- Verse Screen -->
+        <div id="verseScreen" class="screen">
+            <h2 id="verseTitle"></h2>
+            <p id="verseContent" class="verse"></p>
+            <button onclick="startLevel()">Continue</button>
+        </div>
+
+        <!-- Philosophical Question Screen -->
+        <div id="pgQuestionScreen" class="screen">
+            <h2 id="pgQuestion"></h2>
+            <div id="pgOptions"></div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <h1>The Harmonic Journey</h1>
+            <div id="spellLevel">Alignment Level 1</div>
+            <div class="canvas-container">
+                <div class="canvas-wrapper">
+                    <img src="images/canvas.png" alt="Canvas Border" class="canvas-border">
+                    <canvas id="magicalEnergyField" width="600" height="200"></canvas>
+                    <canvas id="particleCanvas" width="600" height="200"></canvas>
+                </div>
+            </div>
+            
+            <div class="voltmeter-container">
+                <div id="magicalResonanceMeter">
+                    <div id="needle"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div id="harmonicControls"></div>
+                <div class="button-row">
+                    <button id="generateTarget">New wave</button>
+                    <button id="submit">Resonate</button>
+                </div>
+                <div class="button-row">
+                    <button id="getHint">Harmony Meter</button>
+                    <button id="playSound">Play frequency</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message Screen -->
+        <div id="messageScreen" class="screen">
+            <h2 id="messageTitle"></h2>
+            <p id="messageContent"></p>
+            <button id="messageButton"></button>
+        </div>
+
+        <!-- Ending Screen -->
+        <div id="endingScreen" class="screen">
+            <h2 id="endingTitle"></h2>
+            <pre id="endingContent" class="ending"></pre>
+            <button onclick="restartGame()">Start Again</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // JavaScript Code
+
+document.addEventListener('DOMContentLoaded', function() {
+    showScreen('loadingScreen');
+    preloadAssets(function() {
+        showScreen('startScreen');
+        // Add click sound to all buttons except the resonate button
+        document.querySelectorAll('button:not(#playSound)').forEach(button => {
+            button.addEventListener('click', playClickSound);
+        });
+    });
+});
+
+function playClickSound() {
+    playSound('click.wav');
+}
+
+let harmonicsTimeoutId = null;
+let audioContext;
+let oscillators = [];
+
+const audioCache = {};
+const waveformCanvas = document.getElementById('magicalEnergyField');
+const waveformCtx = waveformCanvas.getContext('2d');
+const needle = document.getElementById('needle');
+const submitButton = document.getElementById('submit');
+const voltmeter = document.getElementById('magicalResonanceMeter');
+
+let targetHarmonics = [];
+let playerHarmonics = [];
+let currentLevel = 1;
+let usedHintOnCurrentWave = false;
+
+// Philosophy Game Variables
+let currentQuestionId = 0;
+let playerChoices = [];
+let playerEndingKey = '';
+
+// PG Questions
+// Function to generate Layer 4 questions (id:10 to id:21)
+function generateLayer4Questions() {
+    const layer4Questions = [
+        // id:10
+        {
+            id: 10,
+            question: "Does technology enhance or hinder art?",
+            options: [
+                { text: "Enhance", nextQuestion: 22 },
+                { text: "Hinder", nextQuestion: 23 },
+            ],
+        },
+        // id:11
+        {
+            id: 11,
+            question: "Is knowledge a burden or a gift?",
+            options: [
+                { text: "A burden", nextQuestion: 24 },
+                { text: "A gift", nextQuestion: 25 },
+            ],
+        },
+        // id:12
+        {
+            id: 12,
+            question: "Can digital art convey true emotion?",
+            options: [
+                { text: "Yes, emotions transcend mediums", nextQuestion: 26 },
+                { text: "No, it's too artificial", nextQuestion: 27 },
+            ],
+        },
+        // id:13
+        {
+            id: 13,
+            question: "Is reality subjective or objective?",
+            options: [
+                { text: "Subjective", nextQuestion: 28 },
+                { text: "Objective", nextQuestion: 29 },
+            ],
+        },
+        // id:14
+        {
+            id: 14,
+            question: "Does acceptance lead to complacency?",
+            options: [
+                { text: "Yes, it hinders growth", nextQuestion: 30 },
+                { text: "No, it brings peace", nextQuestion: 31 },
+            ],
+        },
+        // id:15
+        {
+            id: 15,
+            question: "Is striving necessary for progress?",
+            options: [
+                { text: "Yes, it's essential", nextQuestion: 32 },
+                { text: "No, it causes stress", nextQuestion: 33 },
+            ],
+        },
+        // id:16
+        {
+            id: 16,
+            question: "Is the digital world as real as the physical?",
+            options: [
+                { text: "Yes, reality is perception", nextQuestion: 34 },
+                { text: "No, it's a simulation", nextQuestion: 35 },
+            ],
+        },
+        // id:17
+        {
+            id: 17,
+            question: "Can we find meaning in randomness?",
+            options: [
+                { text: "Yes, patterns emerge", nextQuestion: 36 },
+                { text: "No, it's just chaos", nextQuestion: 37 },
+            ],
+        },
+        // id:18
+        {
+            id: 18,
+            question: "Does the observer influence the observed?",
+            options: [
+                { text: "Yes, always", nextQuestion: 38 },
+                { text: "No, observation is passive", nextQuestion: 39 },
+            ],
+        },
+        // id:19
+        {
+            id: 19,
+            question: "Is art a reflection or a creation of reality?",
+            options: [
+                { text: "A reflection", nextQuestion: 40 },
+                { text: "A creation", nextQuestion: 41 },
+            ],
+        },
+        // id:20
+        {
+            id: 20,
+            question: "Is art a reflection or a creation of reality?",
+            options: [
+                { text: "A reflection", nextQuestion: 42 },
+                { text: "A creation", nextQuestion: 43 },
+            ],
+        },
+        // id:21
+        {
+            id: 21,
+            question: "Is art a reflection or a creation of reality?",
+            options: [
+                { text: "A reflection", nextQuestion: 44 },
+                { text: "A creation", nextQuestion: 45 },
+            ],
+        },
+    ];
+    return layer4Questions;
+}
+
+// Function to generate Layer 5 questions (id:22 to id:45)
+function generateLayer5Questions() {
+    const layer5Questions = [];
+    for (let i = 22; i <= 45; i++) {
+        layer5Questions.push({
+            id: i,
+            question: "What is love?",
+            options: [
+                { text: "I don’t know", nextQuestion: `ending${i - 21}` },
+                { text: "Baby don’t hurt me", nextQuestion: `ending${i - 21}` },
+            ],
+        });
+    }
+    return layer5Questions;
+}
+
+// Complete Questions Array
+const questions = [
+    // Layer 1
+    {
+        id: 0,
+        question: "What is the meaning of life?",
+        options: [
+            { text: "Happiness", nextQuestion: 1 },
+            { text: "Knowledge", nextQuestion: 2 },
+            { text: "There is no meaning", nextQuestion: 3 },
+        ],
+    },
+    // Layer 2
+    {
+        id: 1,
+        question: "Is happiness more important than truth?",
+        options: [
+            { text: "Yes, happiness matters more", nextQuestion: 4 },
+            { text: "No, truth must come first", nextQuestion: 5 },
+        ],
+    },
+    {
+        id: 2,
+        question: "Is the pursuit of knowledge endless?",
+        options: [
+            { text: "Yes, we are forever seeking", nextQuestion: 6 },
+            { text: "No, ultimate knowledge is possible", nextQuestion: 7 },
+        ],
+    },
+    {
+        id: 3,
+        question: "If there is no inherent meaning, can we create our own?",
+        options: [
+            { text: "Yes, we can create our own purpose", nextQuestion: 8 },
+            { text: "No, it's all pointless", nextQuestion: 9 },
+        ],
+    },
+    // Layer 3
+    {
+        id: 4,
+        question: "Does seeking happiness justify avoiding harsh truths?",
+        options: [
+            { text: "Yes, happiness is worth it", nextQuestion: 10 },
+            { text: "No, we must face the truth", nextQuestion: 11 },
+        ],
+    },
+    {
+        id: 5,
+        question: "Can truth exist without happiness?",
+        options: [
+            { text: "Yes, truth is independent", nextQuestion: 12 },
+            { text: "No, truth and happiness are intertwined", nextQuestion: 13 },
+        ],
+    },
+    {
+        id: 6,
+        question: "Does the quest for knowledge bring fulfillment or despair?",
+        options: [
+            { text: "Fulfillment", nextQuestion: 14 },
+            { text: "Despair", nextQuestion: 15 },
+        ],
+    },
+    {
+        id: 7,
+        question: "Is ignorance bliss or a hindrance?",
+        options: [
+            { text: "Bliss", nextQuestion: 16 },
+            { text: "Hindrance", nextQuestion: 17 },
+        ],
+    },
+    {
+        id: 8,
+        question: "Can art exist without philosophy?",
+        options: [
+            { text: "Yes, art stands alone", nextQuestion: 18 },
+            { text: "No, they are intertwined", nextQuestion: 19 },
+        ],
+    },
+    {
+        id: 9,
+        question: "Is suffering essential for creativity?",
+        options: [
+            { text: "Yes, it fuels expression", nextQuestion: 20 },
+            { text: "No, joy is sufficient", nextQuestion: 21 },
+        ],
+    },
+    // Layer 4
+    ...generateLayer4Questions(),
+    // Layer 5
+    ...generateLayer5Questions(),
+];
+
+// Complete list of endings
+const endings = {
+    ending1: `Title: "Art Without Philosophy"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe art can exist independently of philosophical thought?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Art for art's sake." – Victor Cousin
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Where is my mind?" – The Pixies
+
+Then we would go back to dick and fart jokes`,
+
+    ending2: `Title: "The Fusion of Art and Philosophy"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe art and philosophy are inseparable companions?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Philosophy is the highest music." – Plato
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Everything in its right place." – Radiohead
+
+Then we would go back to dick and fart jokes`,
+
+    ending3: `Title: "Suffering Fuels Creativity"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe pain is a catalyst for artistic expression?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"From suffering comes wisdom." – Aeschylus
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Sleep don't visit, so I choke on sun." – Godspeed You! Black Emperor
+
+Then we would go back to dick and fart jokes`,
+
+    ending4: `Title: "Joy as Creative Inspiration"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe happiness is sufficient for creativity?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Joy is the simplest form of gratitude." – Karl Barth
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Heads will roll on the floor." – Yeah Yeah Yeahs
+
+Then we would go back to dick and fart jokes`,
+
+    ending5: `Title: "Embracing Technology in Art"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe technology is a tool for artistic innovation?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Technology is the art of arranging the world." – Martin Heidegger
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Fitter, happier, more productive." – Radiohead
+
+Then we would go back to dick and fart jokes`,
+
+    ending6: `Title: "Technology Hinders Authenticity"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe technology distances art from its essence?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"The machine threatens all that is human." – Martin Heidegger
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Got me a movie, I want you to know." – The Pixies
+
+Then we would go back to dick and fart jokes`,
+
+    ending7: `Title: "Knowledge as a Burden"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe knowledge complicates life?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"For in much wisdom is much grief." – Ecclesiastes 1:18
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Paranoid, man, makes paranoid plans." – Radiohead
+
+Then we would go back to dick and fart jokes`,
+
+    ending8: `Title: "Knowledge as Empowerment"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe knowledge is an empowering treasure?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Knowledge is power." – Francis Bacon
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Run, run, run away, lost, lost, lost my mind." – Yeah Yeah Yeahs
+
+Then we would go back to dick and fart jokes`,
+
+    ending9: `Title: "Emotions Transcend Mediums"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe digital art can convey deep emotions?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Art is not what you see, but what you make others see." – Edgar Degas
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"The car's on fire and there's no driver." – Interpol
+
+Then we would go back to dick and fart jokes`,
+
+    ending10: `Title: "Digital Art Lacks Authenticity"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe digital art can't capture true feelings?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"The medium is the message." – Marshall McLuhan
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"We're trapped in the belly of this horrible machine
+And the machine is bleeding to death" – Godspeed You! Black Emperor
+
+Then we would go back to dick and fart jokes`,
+
+    ending11: `Title: "Reality is Subjective"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe reality is shaped by perception?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"We see things not as they are, but as we are." – Immanuel Kant
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Just 'cause you feel it doesn't mean it's there." – Radiohead
+
+Then we would go back to dick and fart jokes`,
+
+    ending12: `Title: "Reality is Objective"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe reality is a concrete, objective truth.
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Reality exists independent of observers." – Albert Einstein
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"We're floating in space." – The Strokes
+
+Then we would go back to dick and fart jokes`,
+
+    ending13: `Title: "Acceptance Breeds Complacency"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe accepting things prevents growth?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"The unexamined life is not worth living." – Socrates
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"But it's so cold, and I don't know where." – The Strokes
+
+Then we would go back to dick and fart jokes`,
+
+    ending14: `Title: "Acceptance Brings Peace"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe acceptance is the path to tranquility?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Peace comes from within. Do not seek it without." – Buddha
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Love, love will tear us apart again." – Joy Division
+
+Then we would go back to dick and fart jokes`,
+
+    ending15: `Title: "Striving Fuels Progress"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe constant striving drives advancement?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Man is condemned to be free." – Jean-Paul Sartre
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Can't you see I'm trying?" – The Strokes
+
+Then we would go back to dick and fart jokes`,
+
+    ending16: `Title: "Striving Causes Distress"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe relentless striving leads to anxiety?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Our life is frittered away by detail... simplify." – Henry David Thoreau
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"No alarms and no surprises." – Radiohead
+
+Then we would go back to dick and fart jokes`,
+
+    ending17: `Title: "Digital Reality Equals Physical"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe digital experiences are as valid?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Reality is merely an illusion." – Albert Einstein
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"PDA, we have a communication." – Interpol
+
+Then we would go back to dick and fart jokes`,
+
+    ending18: `Title: "Digital World as Illusion"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe the digital realm is just a shadow?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"We live in a world with more information, less meaning." – Jean Baudrillard
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Is this it?" – The Strokes
+
+Then we would go back to dick and fart jokes`,
+
+    ending19: `Title: "Meaning in Chaos"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe patterns emerge from randomness?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Order is not pressure from without, but equilibrium from within." – José Ortega y Gasset
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Every whisper, every waking hour." – Radiohead
+
+Then we would go back to dick and fart jokes`,
+
+    ending20: `Title: "Embracing the Void"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe the universe is indifferent?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"The only absolute knowledge is that life is meaningless." – Tolstoy
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Transmission, begin transmission." – Joy Division
+
+Then we would go back to dick and fart jokes`,
+
+    ending21: `Title: "Observer Effect"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe our observation alters reality?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"What we observe is not nature itself." – Heisenberg
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"You are the sun and the moon." – Interpol
+
+Then we would go back to dick and fart jokes`,
+
+    ending22: `Title: "Detached Observer"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe we can observe without altering?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"The observer listens without imposing will." – Lao Tzu
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"I don't want to waste your time." – The Strokes
+
+Then we would go back to dick and fart jokes`,
+
+    ending23: `Title: "Art as a Mirror"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe art reflects reality?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Art is the lie that enables us to realize the truth." – Picasso
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Can't you see what you've done to my heart." – Interpol
+
+Then we would go back to dick and fart jokes`,
+
+    ending24: `Title: "Art as Creation of Reality"
+If we were hanging out I might consider the answers to your questions and say something like,
+Maybe art creates reality?
+
+Then you would take a sophisticated sip of port and quote some philosopher like,
+"Reality is created by the mind." – Plato
+
+Then I would take a sizable toke from my joint and try and quote music lyrics like,
+"Immerse your soul in love." – Radiohead
+
+Then we would go back to dick and fart jokes`,
+};
+
+
+// Verses for each level
+const verses = [
+  
+    "The Fundamental Harmonic\nAlign your mind to the core vibration.\nJust go with it lol.  On the next screen drag the pink crystal across the slider.\nWhen the two waves are aligned press the Resonate button.",
+    "The Second Harmonic\n\nDelve deeper into the layers of existence. Embrace the duality of nature.",
+    "The Third Harmonic\n\nExplore the complexities that arise. Balance the trifecta of thought, emotion, and action.",
+    "The Fourth Harmonic\n\nUncover the hidden patterns. Seek harmony in the chaos.",
+    "The Fifth Harmonic\n\nReach the pinnacle of your harmonic journey. Prepare for the revelation that awaits."
+];
+
+// Preload Assets Function
+function preloadAssets(callback) {
+    const imagesToLoad = [
+        'images/parchment.jpg',
+        'images/button.png',
+        'images/canvas.png',
+        'images/magicalResonanceMeter.png',
+        'images/needle.png',
+        'images/slider-background.png',
+        'images/slider-stone.png',
+        // Add any additional images you use
+    ];
+
+    const soundsToLoad = [
+        'sounds/click.wav',
+        'sounds/Cast.ogg',
+        // Add any additional sounds you use
+    ];
+
+    let totalAssets = imagesToLoad.length + soundsToLoad.length;
+    let loadedAssets = 0;
+
+    function assetLoaded() {
+        loadedAssets++;
+        const progress = (loadedAssets / totalAssets) * 100;
+        document.getElementById('loadingProgress').style.width = progress + '%';
+        if (loadedAssets === totalAssets) {
+            callback();
+        }
+    }
+
+    imagesToLoad.forEach(src => {
+        const img = new Image();
+        img.onload = assetLoaded;
+        img.src = src;
+    });
+
+    soundsToLoad.forEach(src => {
+        const audio = new Audio();
+        audio.oncanplaythrough = assetLoaded;
+        audio.src = src;
+    });
+}
+
+// Function to show screens
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(screen => screen.style.display = 'none');
+    document.getElementById(screenId).style.display = 'block';
+}
+
+// Function to show verses and render philosophical questions
+function showVerse() {
+    playClickSound();
+    currentQuestionId = 0; // Start from the root question
+    renderQuestion(currentQuestionId);
+    showScreen('pgQuestionScreen');
+}
+
+
+// Function to render philosophical questions
+function renderQuestion(id) {
+    const questionData = questions.find(q => q.id === id);
+    if (!questionData) {
+        console.error(`Question with id ${id} not found.`);
+        return;
+    }
+
+    console.log(`Rendering Question ID: ${id}`); // Debugging Log
+
+    const questionElement = document.getElementById("pgQuestion");
+    const optionsElement = document.getElementById("pgOptions");
+
+    questionElement.innerText = questionData.question;
+    optionsElement.innerHTML = "";
+
+    questionData.options.forEach((option) => {
+        const optionDiv = document.createElement("div");
+        optionDiv.className = "option";
+        const label = document.createElement("span");
+        label.innerText = option.text;
+        optionDiv.appendChild(label);
+
+        optionDiv.onclick = () => {
+            playClickSound();
+            playerChoices.push(option.text);
+
+            if (typeof option.nextQuestion === 'string' && option.nextQuestion.startsWith('ending')) {
+                playerEndingKey = option.nextQuestion;
+                showPhilosophicalEnding();
+            } else {
+                const previousQuestionId = id; // Use the current id as previous
+                currentQuestionId = option.nextQuestion;
+                // Decide whether to show a verse before the next question
+                const isLayerEnd = checkIfLayerEnd(previousQuestionId);
+                if (isLayerEnd) {
+                    document.getElementById('verseTitle').textContent = `Level ${currentLevel}`;
+                    document.getElementById('verseContent').textContent = verses[currentLevel - 1];
+                    showScreen('verseScreen');
+                } else {
+                    renderQuestion(currentQuestionId);
+                    showScreen('pgQuestionScreen');
+                }
+            }
+        };
+        optionsElement.appendChild(optionDiv);
+    });
+}
+
+
+
+// Define all layer end question IDs
+const layerEndQuestionIds = [
+    0,  // Layer 1
+    1, 2, 3,  // Layer 2
+    4, 5, 6, 7, 8, 9,  // Layer 3
+    10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21  // Layer 4
+];
+
+function checkIfLayerEnd(previousQuestionId) {
+    return layerEndQuestionIds.includes(previousQuestionId);
+}
+
+// Function to play sounds
+function playSound(soundFile) {
+    if (!audioCache[soundFile]) {
+        audioCache[soundFile] = new Audio(`sounds/${soundFile}`);
+    }
+    audioCache[soundFile].currentTime = 0;
+    audioCache[soundFile].play().catch(error => console.error('Error playing sound:', error));
+}
+
+// Function to start the level
+function startLevel() {
+    playClickSound();
+    showScreen('gameScreen');
+    initializeLevel();
+}
+
+// Function to show messages
+function showMessage(title, content, buttonText, buttonAction) {
+    document.getElementById('messageTitle').textContent = title;
+    document.getElementById('messageContent').textContent = content;
+    const button = document.getElementById('messageButton');
+    button.textContent = buttonText;
+    button.onclick = function() {
+        playClickSound();
+        buttonAction();
+    };
+    showScreen('messageScreen');
+}
+
+// Initialize Audio Context and Oscillators
+function initAudio() {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    const fundamentalFreq = 220; // A3 note
+
+    document.querySelectorAll('input[type="range"]').forEach((slider, index) => {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(fundamentalFreq * (index + 1), audioContext.currentTime);
+        
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime); // Start with gain 0
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.start();
+        
+        oscillator.gainNode = gainNode; // Store reference to gainNode
+        oscillators.push(oscillator);
+    });
+}
+
+// Function to Update Harmonics
+function updateHarmonics() {
+    const harmonics = [];
+    document.querySelectorAll('input[type="range"]').forEach(slider => {
+        harmonics.push(parseFloat(slider.value));
+    });
+
+    harmonics.forEach((amplitude, index) => {
+        if (oscillators[index]) {
+            const gainNode = oscillators[index].gainNode;
+            const reducedAmplitude = amplitude * 0.5;
+            gainNode.gain.linearRampToValueAtTime(reducedAmplitude, audioContext.currentTime + 0.1);
+        }
+    });
+}
+
+// Function to Stop Harmonics
+function stopHarmonics() {
+    oscillators.forEach(osc => osc.stop());
+    oscillators = [];
+}
+
+// Function to Play Harmonics
+function playHarmonics(harmonics) {
+    if (!audioContext) initAudio();
+
+    // Stop previous oscillators if any
+    stopHarmonics();
+
+    const fundamentalFreq = 220; // A3 note
+
+    harmonics.forEach((amplitude, index) => {
+        if (amplitude > 0) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(fundamentalFreq * (index + 1), audioContext.currentTime);
+
+            const reducedAmplitude = amplitude * 0.5;
+            gainNode.gain.setValueAtTime(reducedAmplitude, audioContext.currentTime);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.start();
+            oscillators.push(oscillator);
+        }
+    });
+
+    // Return the timeout ID
+    return setTimeout(() => {
+        stopHarmonics();
+    }, 2000);
+}
+
+// Function to Reset Sliders
+function resetSliders() {
+    playerHarmonics = Array(currentLevel).fill(0);
+    for (let i = 1; i <= currentLevel; i++) {
+        const slider = document.getElementById(`harmonic${i}`);
+        if (slider) {
+            slider.value = 0;
+        }
+    }
+    updateCanvas();
+}
+
+// Function to Get Ordinal Suffix
+function getOrdinalSuffix(i) {
+    const j = i % 10,
+          k = i % 100;
+    if (j == 1 && k != 11) {
+        return i + "st";
+    }
+    if (j == 2 && k != 12) {
+        return i + "nd";
+    }
+    if (j == 3 && k != 13) {
+        return i + "rd";
+    }
+    return i + "th";
+}
+
+
+// Function to Initialize Level
+function initializeLevel() {
+    const harmonicControls = document.getElementById('harmonicControls');
+    harmonicControls.innerHTML = '';
+    
+    targetHarmonics = Array.from({length: currentLevel}, () => Math.random());
+    playerHarmonics = Array(currentLevel).fill(0);
+
+    for (let i = 1; i <= currentLevel; i++) {
+        const div = document.createElement('div');
+        div.className = 'slider-container';
+        div.innerHTML = `
+            <label for="harmonic${i}">${i === 1 ? 'Fundamental' : getOrdinalSuffix(i) + ' Harmonic'}: </label>
+            <input type="range" id="harmonic${i}" min="0" max="1" step="0.01" value="0">
+        `;
+        harmonicControls.appendChild(div);
+
+        document.getElementById(`harmonic${i}`).addEventListener('input', function(e) {
+            playerHarmonics[i-1] = parseFloat(e.target.value);
+            updateCanvas();
+        });
+    }
+
+    document.getElementById('spellLevel').textContent = `Alignment Level ${currentLevel}`;
+    usedHintOnCurrentWave = false;
+    voltmeter.style.display = 'none';
+    updateCanvas();
+    resizeCanvas();
+
+    // Add click sounds to game screen buttons
+    document.getElementById('generateTarget').addEventListener('click', playClickSound);
+    document.getElementById('submit').addEventListener('click', playClickSound);
+    document.getElementById('getHint').addEventListener('click', playClickSound);
+    //document.getElementById('playSound').addEventListener('click', playClickSound); // Commented out to stop click sound on resonate button
+}
+
+// Function to Draw Waveform
+function drawWaveform(harmonics, isTarget) {
+    waveformCtx.beginPath();
+    if (isTarget) {
+        waveformCtx.strokeStyle = 'blue';
+    } else {
+        const matchPercentage = calculateMatch();
+        if (matchPercentage < 70) {
+            waveformCtx.strokeStyle = 'red';
+        } else if (matchPercentage < 93) {
+            waveformCtx.strokeStyle = 'red';
+        } else {
+            waveformCtx.strokeStyle = 'green';
+        }
+    }
+    const canvasWidth = waveformCanvas.width;
+    const canvasHeight = waveformCanvas.height;
+    const drawingWidth = canvasWidth * 0.9;  // 90% of the canvas width
+    const drawingHeight = canvasHeight * 0.9;  // 90% of the canvas height
+    const xOffset = canvasWidth * 0.05;  // 5% offset from left
+    const yOffset = canvasHeight * 0.05;  // 5% offset from top
+
+    for (let x = 0; x < drawingWidth; x++) {
+        let y = 0;
+        for (let i = 0; i < harmonics.length; i++) {
+            y += harmonics[i] * Math.sin((i + 1) * x * (0.05 * 600 / drawingWidth));
+        }
+        y = drawingHeight / 2 - y * (45 * drawingHeight / 200);  // Adjusted scaling factor
+        const drawX = x + xOffset;
+        const drawY = y + yOffset;
+        if (x === 0) {
+            waveformCtx.moveTo(drawX, drawY);
+        } else {
+            waveformCtx.lineTo(drawX, drawY);
+        }
+    }
+    waveformCtx.stroke();
+}
+
+// Function to Update Canvas
+function updateCanvas() {
+    waveformCtx.clearRect(0, 0, waveformCanvas.width, waveformCanvas.height);
+    waveformCtx.fillStyle = 'rgba(0, 0, 0, 0)'; // Transparent background
+    waveformCtx.fillRect(0, 0, waveformCanvas.width, waveformCanvas.height);
+    drawWaveform(targetHarmonics, true);
+    drawWaveform(playerHarmonics, false);
+    updateSubmitButton();
+
+    if (usedHintOnCurrentWave) {
+        updateVoltmeter();
+    }
+
+    if (oscillators.length > 0) {
+        playHarmonics(playerHarmonics);
+    }
+}
+
+// Function to Generate Target Harmonics
+function generateTarget() {
+    targetHarmonics = Array.from({length: currentLevel}, () => Math.random());
+    usedHintOnCurrentWave = false;
+    voltmeter.style.display = 'none';
+    resetSliders();
+    updateCanvas();
+}
+
+
+
+// Function to Get Hint
+function getHint() {
+    if (!usedHintOnCurrentWave) {
+        usedHintOnCurrentWave = true;
+        voltmeter.style.display = 'block';
+        updateVoltmeter();
+    } else {
+        showMessage("Harmony Meter Already Consulted", "You've already consulted the Harmony Meter for this spell!", "Continue", () => showScreen('gameScreen'));
+    }
+}
+
+// Function to Calculate Match Percentage
+function calculateMatch() {
+    let score = 0;
+    for (let i = 0; i < currentLevel; i++) {
+        score += 1 - Math.abs(targetHarmonics[i] - playerHarmonics[i]);
+    }
+    return (score / currentLevel) * 100;
+}
+
+// Function to Update Submit Button
+function updateSubmitButton() {
+    const matchPercentage = calculateMatch();
+    if (matchPercentage >= 93) {
+        submitButton.classList.add('active');
+    } else {
+        submitButton.classList.remove('active');
+    }
+}
+
+// Function to Update Voltmeter
+function updateVoltmeter() {
+    const matchPercentage = calculateMatch();
+    const angle = (matchPercentage / 100) * 180 - 90; // -90 to 90 degrees
+    needle.style.transform = `rotate(${angle}deg)`;
+}
+
+// Function to Vibrate Waves
+function vibrateWaves(duration) {
+    let startTime = Date.now();
+    let originalTargetHarmonics = [...targetHarmonics];
+    let originalPlayerHarmonics = [...playerHarmonics];
+
+    function vibrate() {
+        let elapsed = Date.now() - startTime;
+        if (elapsed < duration) {
+            // Apply a small random offset to each harmonic
+            targetHarmonics = originalTargetHarmonics.map(h => h + (Math.random() - 0.5) * 0.1);
+            playerHarmonics = originalPlayerHarmonics.map(h => h + (Math.random() - 0.5) * 0.1);
+            updateCanvas();
+            requestAnimationFrame(vibrate);
+        } else {
+            // Restore original harmonics
+            targetHarmonics = originalTargetHarmonics;
+            playerHarmonics = originalPlayerHarmonics;
+            updateCanvas();
+            triggerSpellEffect();
+        }
+    }
+
+    vibrate();
+}
+
+// Function to Submit Spell
+function submit() {
+    if (calculateMatch() >= 93) {
+        // Stop any playing harmonics
+        if (harmonicsTimeoutId) {
+            clearTimeout(harmonicsTimeoutId);
+            harmonicsTimeoutId = null;
+        }
+        stopHarmonics();
+
+        playSound('Cast.ogg');
+        submitButton.disabled = true;
+
+        vibrateWaves(1500); // Vibrate for 1.5 seconds
+
+        setTimeout(() => {
+            triggerSpellEffect();
+
+            setTimeout(() => {
+                submitButton.disabled = false;
+
+                // Proceed to the next level or show ending
+                if (currentLevel < 5) {
+                    currentLevel++;
+                    // Proceed to the next philosophical question
+                    renderQuestion(currentQuestionId);
+                    showScreen('pgQuestionScreen');
+                }
+                // If currentLevel >=5, endings are handled via Layer 5 questions
+            }, 2500); // 2.5 seconds delay after particle effect
+
+        }, 1500); // 1.5 seconds delay for vibration effect
+
+    } else {
+        showMessage(
+            "Dude, you've gotta align your frequencies",
+            "It's all about balance. Keep adjusting the harmonics to align the two waves!",
+            "Continue",
+            () => showScreen('gameScreen')
+        );
+    }
+}
+
+
+
+// Function to Resize Canvas
+function resizeCanvas() {
+    const container = document.querySelector('.canvas-wrapper');
+    const canvas = document.getElementById('magicalEnergyField');
+    const particleCanvas = document.getElementById('particleCanvas');
+
+    const newWidth = container.clientWidth;
+    const newHeight = newWidth / 3; // Maintain 3:1 aspect ratio
+
+    canvas.width = newWidth;
+    canvas.height = newHeight;
+    particleCanvas.width = newWidth;
+    particleCanvas.height = newHeight;
+
+    updateCanvas(); // Redraw the waveforms
+}
+
+window.addEventListener('resize', resizeCanvas);
+
+// Call resizeCanvas initially and whenever the window is resized
+window.addEventListener('load', resizeCanvas);
+window.addEventListener('resize', resizeCanvas);
+
+// Event Listeners
+document.getElementById('generateTarget').addEventListener('click', () => {
+    playSound('click.wav');
+    generateTarget();
+});
+
+document.getElementById('getHint').addEventListener('click', () => {
+    playSound('click.wav');
+    getHint();
+});
+
+submitButton.addEventListener('click', () => {
+    playSound('click.wav');
+    submit();
+});
+
+document.getElementById('playSound').addEventListener('click', (event) => {
+    event.stopPropagation(); // Prevent the click event from bubbling up
+    if (harmonicsTimeoutId) {
+        clearTimeout(harmonicsTimeoutId);
+    }
+    harmonicsTimeoutId = playHarmonics(playerHarmonics);
+});
+
+// Particle effect code
+const particleCanvas = document.getElementById('particleCanvas');
+const particleCtx = particleCanvas.getContext('2d');
+
+class Particle {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 10 + 5; // Increased size
+        this.speedX = Math.random() * 3 - 1.5;
+        this.speedY = Math.random() * 3 - 1.5;
+        this.color = `hsl(${Math.random() * 60 + 180}, 100%, 50%)`;
+        this.life = 100; // Added life property
+    }
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.size > 0.2) this.size -= 0.1;
+        this.life--; // Decrease life
+    }
+    draw() {
+        particleCtx.fillStyle = this.color;
+        particleCtx.beginPath();
+        particleCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        particleCtx.fill();
+    }
+}
+
+let particles = [];
+
+function createParticles() {
+    for (let i = 0; i < 200; i++) { // Increased number of particles
+        particles.push(new Particle(particleCanvas.width / 2, particleCanvas.height / 2));
+    }
+}
+
+function animateParticles() {
+    particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+    particles.forEach((particle, index) => {
+        particle.update();
+        particle.draw();
+        if (particle.life <= 0) {
+            particles.splice(index, 1);
+        }
+    });
+    if (particles.length > 0) {
+        requestAnimationFrame(animateParticles);
+    }
+}
+
+function triggerSpellEffect() {
+    createParticles();
+    animateParticles();
+}
+
+// Function to Show Philosophical Ending
+function showPhilosophicalEnding() {
+    const endingText = endings[playerEndingKey];
+    if (!endingText) {
+        console.error(`Ending for key ${playerEndingKey} not found.`);
+        showMessage(
+            "Error",
+            "An unexpected error occurred. Please restart the game.",
+            "Restart",
+            () => restartGame()
+        );
+        return;
+    }
+    const endingTitleElement = document.getElementById('endingTitle');
+    const endingContentElement = document.getElementById('endingContent');
+
+    const lines = endingText.split('\n');
+    endingTitleElement.textContent = lines[0].replace('Title: ', '');
+    endingContentElement.textContent = lines.slice(1).join('\n');
+
+    showScreen('endingScreen');
+}
+
+
+// Function to Restart Game
+function restartGame() {
+    playClickSound();
+    currentLevel = 1;
+    playerChoices = [];
+    playerEndingKey = '';
+    currentQuestionId = 0; // Correct variable name
+    showScreen('startScreen');
+}
+
+// Initialize the game
+resizeCanvas();
+
+
+
+// Initialize the game
+resizeCanvas();
+
+    </script>
+</body>
+</html>
