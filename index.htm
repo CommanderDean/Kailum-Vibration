@@ -388,11 +388,11 @@
 </head>
 <body>
 
-    <!-- Background Music (Optional) -->
-    <audio id="backgroundMusic" loop>
-        <source src="" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+<!-- Background Music (Optional) -->
+<audio id="backgroundMusic" loop>
+    <source src="sounds/kailumbday.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
 
     <!-- Loading Screen -->
     <div id="loadingScreen" class="screen">
@@ -1051,10 +1051,12 @@ function preloadAssets(callback) {
     ];
 
     const soundsToLoad = [
-        'sounds/click.wav',
-        'sounds/Cast.ogg',
-        // Add any additional sounds you use
-    ];
+    'sounds/click.wav',
+    'sounds/Cast.ogg',
+    'sounds/kailumbday.mp3',
+    // Add any additional sounds you use
+];
+
 
     let totalAssets = imagesToLoad.length + soundsToLoad.length;
     let loadedAssets = 0;
@@ -1633,16 +1635,25 @@ function showPhilosophicalEnding() {
     endingContentElement.textContent = lines.slice(1).join('\n');
 
     showScreen('endingScreen');
+
+    // Play the background music
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    backgroundMusic.play();
 }
 
 
-// Function to Restart Game
 function restartGame() {
     playClickSound();
+
+    // Pause the background music
+    const backgroundMusic = document.getElementById('backgroundMusic');
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
+
     currentLevel = 1;
     playerChoices = [];
     playerEndingKey = '';
-    currentQuestionId = 0; // Correct variable name
+    currentQuestionId = 0;
     showScreen('startScreen');
 }
 
